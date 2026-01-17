@@ -91,20 +91,38 @@ async function checkRules() {
         // Check if we already intervened recently to avoid spam
         const lastIntervention = await chrome.storage.session.get(['lastIntervention']);
         const now = Date.now();
-        if (lastIntervention.lastIntervention && (now - lastIntervention.lastIntervention < 60000)) {
-            return; // Cooldown 1 min
+        // Cooldown: 15 seconds for testing (was 60000)
+        if (lastIntervention.lastIntervention && (now - lastIntervention.lastIntervention < 10000)) {
+            console.log('Intervention cooling down...');
+            return;
         }
 
+        console.log('TRIGGERING INTERVENTION');
         triggerIntervention(activeTabId, activeDomain, totalDuration, data.persona);
     }
 }
 
 async function triggerIntervention(tabId, domain, duration, persona) {
-    if (!persona) return; // User hasn't set up yet
+    if (!persona) return;
 
-    // Mock message generation (LLM placeholder)
+    const data = await chrome.storage.local.get(['userSettings']);
+    const settings = data.userSettings;
+
+    let message;
     const minutes = Math.floor(duration / 60000);
-    const message = `You've spent ${minutes} minutes on ${domain}. ${persona.catchphrases[0]}`;
+
+    // Use LLM if API Key exists and isn't 'mock'
+    if (settings && settings.apiKey && settings.apiKey.startsWith('sk-')) {
+        try {
+            message = await generateInterventionMessage(persona, domain, minutes, settings);
+        } catch (e) {
+            console.error('LLM Gen Failed:', e);
+            message = `You've spent ${minutes} minutes on ${domain}. ${persona.catchphrases[0]}`;
+        }
+    } else {
+        // Fallback / Mock
+        message = `You've spent ${minutes} minutes on ${domain}. ${persona.catchphrases[0]}`;
+    }
 
     // Send message to Content Script
     chrome.tabs.sendMessage(tabId, {
@@ -118,7 +136,7 @@ async function triggerIntervention(tabId, domain, duration, persona) {
         // Tab might be closed or not ready
     });
 
-    // Log intervention
+    // Log intervention, stats...
     await chrome.storage.session.set({ lastIntervention: Date.now() });
 
     const stats = await chrome.storage.local.get(['stats']);
@@ -127,9 +145,46 @@ async function triggerIntervention(tabId, domain, duration, persona) {
     await chrome.storage.local.set({ stats: currentStats });
 }
 
+async function generateInterventionMessage(persona, domain, minutes, settings) {
+    const prompt = `
+    You are ${persona.name}, an accountability partner.
+    Tone: ${persona.tone}.
+    User Identity Goal: ${settings.identity}.
+    User Weakness: ${settings.weakness}.
+    
+    The user has been on ${domain} for ${minutes} minutes.
+    
+    Generate a 1-2 sentence intervention message.
+    It should be ${settings.intensity} in intensity.
+    Refer to their identity goal to guilt/motivate them.
+    `;
+
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${settings.apiKey}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            "model": "openai/gpt-3.5-turbo",
+            "messages": [
+                { "role": "system", "content": "You are a concise accountability coach." },
+                { "role": "user", "content": prompt }
+            ]
+        })
+    });
+
+    if (!response.ok) throw new Error('API Error');
+    const json = await response.json();
+    return json.choices[0].message.content;
+}
+
 // Listen for messages from content scripts
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'CLOSE_TAB' && sender.tab) {
+        // If they complied by closing via our button, reset the cooldown
+        // so if they come back immediately, we get them again.
+        chrome.storage.session.remove(['lastIntervention']);
         chrome.tabs.remove(sender.tab.id);
     }
 });
