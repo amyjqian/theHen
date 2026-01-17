@@ -78,7 +78,7 @@ async function checkRules() {
     const totalDuration = storedDuration + currentSessionDuration;
 
     // Simple hardcoded categories for prototype
-    const socialSites = ['facebook.com', 'twitter.com', 'instagram.com', 'youtube.com', 'reddit.com', 'tiktok.com'];
+    const socialSites = ['facebook.com', 'twitter.com', 'instagram.com', 'youtube.com', 'reddit.com', 'tiktok.com', 'x.com', 'facebook.com'];
     const isSocial = socialSites.some(site => activeDomain.includes(site));
 
     // Threshold: 15 minutes (900,000 ms) for social sites
