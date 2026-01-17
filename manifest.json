@@ -16,9 +16,9 @@
   "action": {
     "default_popup": "popup/popup.html",
     "default_icon": {
-      "16": "assets/icon16.png",
-      "48": "assets/icon48.png",
-      "128": "assets/icon128.png"
+      "16": "assets/iconHen.png",
+      "48": "assets/iconHen.png",
+      "128": "assets/iconHen.png"
     }
   },
   "background": {
