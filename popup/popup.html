@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
   <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
@@ -122,45 +123,67 @@
       border-left: 4px solid var(--primary-color);
     }
 
-    h1, h2, h3 {
+    h1,
+    h2,
+    h3 {
       margin-top: 0;
     }
   </style>
 </head>
+
 <body>
 
   <!-- Onboarding View -->
   <div id="onboarding-view" class="hidden">
-    <h2>Setup Your Partner</h2>
+    <h2>Define Your Identity</h2>
     <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px;">
-      Tell us your goals so we can create the perfect accountability persona for you.
+      Who do you want to become? Your AI partner will help you bridge the gap between your current self and your ideal
+      identity.
     </p>
 
     <div class="form-group">
-      <label for="goal">Primary Goal</label>
-      <input type="text" id="goal" placeholder="e.g. Focus on coding, Stop doomscrolling">
+      <label for="identity">I want to be...</label>
+      <input type="text" id="identity" placeholder="e.g. A focused founder, A top 1% developer, A mindful writer">
     </div>
 
     <div class="form-group">
-      <label for="motivation">Motivation Style</label>
-      <select id="motivation">
-        <option value="future_self">Future Self (Inspirational)</option>
-        <option value="guilt">Guilt Trip (Disappointed)</option>
-        <option value="strict">Strict Drill Sergeant</option>
-        <option value="rewards">Reward-based (Supportive)</option>
-      </select>
+      <label for="goal">My tactical goal is...</label>
+      <input type="text" id="goal" placeholder="e.g. Ship my MVP, Study for 2 hours daily">
     </div>
 
     <div class="form-group">
-      <label for="intensity">Intensity Level</label>
-      <select id="intensity">
-        <option value="gentle">Gentle (Polite reminders)</option>
-        <option value="firm">Firm (Persistent)</option>
-        <option value="brutal">Brutal (Unapologetic)</option>
-      </select>
+      <label for="weakness">But I struggle with...</label>
+      <input type="text" id="weakness"
+        placeholder="e.g. Doomscrolling on X, Netflix binges, Procrastinating complexity">
     </div>
 
-    <button id="save-settings">Create Persona</button>
+    <div class="form-group">
+      <label for="apikey">OpenRouter API Key <a href="https://openrouter.ai/keys" target="_blank"
+          style="font-size: 0.75rem; color: var(--primary-color)">(Get Key)</a></label>
+      <input type="password" id="apikey" placeholder="sk-or-...">
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <div class="form-group">
+        <label for="motivation">Coaching Style</label>
+        <select id="motivation">
+          <option value="stoic">Stoic Philosopher</option>
+          <option value="drill_sergeant">Drill Sergeant</option>
+          <option value="caring_friend">Caring Friend</option>
+          <option value="sarcastic_roaster">Sarcastic Roaster</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="intensity">Intensity</label>
+        <select id="intensity">
+          <option value="gentle">Gentle</option>
+          <option value="firm">Firm</option>
+          <option value="unhinged">Unhinged</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="save-settings">Generate My Partner</button>
   </div>
 
   <!-- Dashboard View -->
@@ -182,13 +205,16 @@
       </div>
     </div>
 
-    <button id="reset-settings" style="background-color: transparent; color: #94a3b8; border: 1px solid #e2e8f0; margin-top: 10px; font-size: 0.8rem; padding: 8px;">Reset Settings</button>
-    
+    <button id="reset-settings"
+      style="background-color: transparent; color: #94a3b8; border: 1px solid #e2e8f0; margin-top: 10px; font-size: 0.8rem; padding: 8px;">Reset
+      Settings</button>
+
     <div id="loading-state" class="hidden" style="text-align: center; margin-top: 20px;">
-        Generating persona...
+      Generating persona...
     </div>
   </div>
 
   <script src="popup.js"></script>
 </body>
+
 </html>
