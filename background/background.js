@@ -140,8 +140,11 @@ async function triggerIntervention(tabId, domain, duration, persona) {
     await chrome.storage.session.set({ lastIntervention: Date.now() });
 
     const stats = await chrome.storage.local.get(['stats']);
-    const currentStats = stats.stats || { interventionsToday: 0 };
+    const currentStats = stats.stats || { interventionsToday: 0, interventionsComplied: 0 };
     currentStats.interventionsToday++;
+    // Ensure structure exists
+    if (typeof currentStats.interventionsComplied === 'undefined') currentStats.interventionsComplied = 0;
+
     await chrome.storage.local.set({ stats: currentStats });
 }
 
@@ -180,11 +183,17 @@ async function generateInterventionMessage(persona, domain, minutes, settings) {
 }
 
 // Listen for messages from content scripts
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     if (request.action === 'CLOSE_TAB' && sender.tab) {
         // If they complied by closing via our button, reset the cooldown
-        // so if they come back immediately, we get them again.
         chrome.storage.session.remove(['lastIntervention']);
+
+        // Track Compliance
+        const stats = await chrome.storage.local.get(['stats']);
+        const currentStats = stats.stats || { interventionsToday: 0, interventionsComplied: 0 };
+        currentStats.interventionsComplied = (currentStats.interventionsComplied || 0) + 1;
+        await chrome.storage.local.set({ stats: currentStats });
+
         chrome.tabs.remove(sender.tab.id);
     }
 });

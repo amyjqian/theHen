@@ -48,6 +48,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (stats) {
       interventionCountEl.textContent = stats.interventionsToday || 0;
+
+      const total = stats.interventionsToday || 0;
+      const complied = stats.interventionsComplied || 0;
+      let rate = 100;
+
+      if (total > 0) {
+        rate = Math.round((complied / total) * 100);
+      }
+
+      document.getElementById('compliance-rate').textContent = `${rate}%`;
     }
   }
 
