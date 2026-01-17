@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       logContainer.innerHTML = history.map(h => {
         const time = new Date(h.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         return `<div style="margin-bottom: 4px; border-bottom: 1px solid #f1f5f9; padding-bottom: 2px;">
-          <span style="color: #64748b; font-size: 0.7rem;">${time}</span> 
+          <span style="color: #64748b; font-size: 0.6rem;">${time}</span> 
           <strong>${h.domain}</strong>
         </div>`;
       }).join('');
