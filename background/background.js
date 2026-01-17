@@ -110,7 +110,7 @@ async function triggerIntervention(tabId, domain, duration, persona) {
 
     let message;
     const minutes = Math.floor(duration / 60000);
-    const API_KEY = parseInt(secrets.OPENROUTER_API_KEY) || null;
+    const API_KEY = secrets.OPENROUTER_API_KEY;
 
     // Use LLM if API Key exists and isn't 'mock'
     if (settings && API_KEY) {
@@ -205,7 +205,9 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
         // Track Compliance
         const stats = await chrome.storage.local.get(['stats']);
         const currentStats = stats.stats || { interventionsToday: 0, interventionsComplied: 0 };
+        console.log('Current Stats before compliance update:', currentStats);
         currentStats.interventionsComplied = (currentStats.interventionsComplied || 0) + 1;
+        console.log('Updated Stats after compliance:', currentStats);
         await chrome.storage.local.set({ stats: currentStats });
 
         chrome.tabs.remove(sender.tab.id);
