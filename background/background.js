@@ -110,9 +110,10 @@ async function triggerIntervention(tabId, domain, duration, persona) {
 
     let message;
     const minutes = Math.floor(duration / 60000);
+    const API_KEY = parseInt(process.env.API_KEY) || null;
 
     // Use LLM if API Key exists and isn't 'mock'
-    if (settings && settings.apiKey && settings.apiKey.startsWith('sk-')) {
+    if (settings && API_KEY) {
         try {
             message = await generateInterventionMessage(persona, domain, minutes, settings);
         } catch (e) {
@@ -177,7 +178,7 @@ async function generateInterventionMessage(persona, domain, minutes, settings) {
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
-            "Authorization": `Bearer ${settings.apiKey}`,
+            "Authorization": `Bearer ${API_KEY}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
