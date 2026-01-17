@@ -6,8 +6,8 @@
   <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Accountability Partner</title>
-  
+  <title>theHen</title>
+
   <style>
     body {
       width: 350px;
@@ -49,12 +49,17 @@
       border-color: var(--primary-color);
     }
 
+    ::placeholder {
+      font-size: 0.5rem;
+      opacity: 0.7;
+    }
+
     button {
       width: 100%;
       padding: 12px;
       background-color: var(--primary-color);
-      color: white;
-      border: none;
+      color: black;
+      border: 1px solid #000;
       border-radius: var(--border-radius);
       font-weight: 600;
       cursor: pointer;
@@ -143,18 +148,17 @@
 
     <div class="form-group">
       <label for="identity">I want to be...</label>
-      <input type="text" id="identity" placeholder="e.g. A focused founder, A top 1% developer, A mindful writer">
+      <input type="text" id="identity" placeholder="e.g. diligent, financially responsible, creative">
     </div>
 
     <div class="form-group">
-      <label for="goal">My tactical goal is...</label>
-      <input type="text" id="goal" placeholder="e.g. Ship my MVP, Study for 2 hours daily">
+      <label for="goal">My goal is...</label>
+      <input type="text" id="goal" placeholder="e.g. study, deploy project, finish book">
     </div>
 
     <div class="form-group">
       <label for="weakness">But I struggle with...</label>
-      <input type="text" id="weakness"
-        placeholder="e.g. Doomscrolling on X, Netflix binges, Procrastinating complexity">
+      <input type="text" id="weakness" placeholder="e.g. doomscrolling, procrastination, impulse buying">
     </div>
 
     <div class="form-group">
@@ -165,12 +169,12 @@
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
       <div class="form-group">
-        <label for="motivation">Coaching Style</label>
+        <label for="motivation">Persona Style</label>
         <select id="motivation">
-          <option value="stoic">Stoic Philosopher</option>
-          <option value="drill_sergeant">Drill Sergeant</option>
-          <option value="caring_friend">Caring Friend</option>
-          <option value="sarcastic_roaster">Sarcastic Roaster</option>
+          <option value="stoic">Stoic</option>
+          <option value="drill_sergeant">Harsh</option>
+          <option value="caring_friend">Caring</option>
+          <option value="sarcastic_roaster">Sarcastic</option>
         </select>
       </div>
       <div class="form-group">
@@ -183,7 +187,7 @@
       </div>
     </div>
 
-    <button id="save-settings">Generate My Partner</button>
+    <button id="save-settings">Generate Hen!</button>
   </div>
 
   <!-- Dashboard View -->
