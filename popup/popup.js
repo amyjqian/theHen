@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     dashboardView.classList.add('hidden');
   }
 
-  function showDashboard(persona, stats) {
+  async function showDashboard(persona, stats) {
     onboardingView.classList.add('hidden');
     dashboardView.classList.remove('hidden');
 
@@ -59,6 +59,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       document.getElementById('compliance-rate').textContent = `${rate}%`;
     }
+
+    // Render Log
+    const history = (await chrome.storage.local.get(['interventionHistory'])).interventionHistory || [];
+    const logContainer = document.getElementById('distraction-log');
+
+    if (history.length > 0) {
+      logContainer.innerHTML = history.map(h => {
+        const time = new Date(h.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return `<div style="margin-bottom: 4px; border-bottom: 1px solid #f1f5f9; padding-bottom: 2px;">
+          <span style="color: #64748b; font-size: 0.7rem;">${time}</span> 
+          <strong>${h.domain}</strong>
+        </div>`;
+      }).join('');
+    } else {
+      logContainer.innerHTML = '<div style="color: #94a3b8; text-align: center;">No distractions yet.</div>';
+    }
   }
 
   async function handleSave() {
@@ -67,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const weakness = weaknessInput.value.trim();
     const apiKey = apiKeyInput.value.trim();
 
-    if (!identity || !apikey) {
+    if (!identity || !apiKey) {
       alert('Please fill in your Identity and API Key.');
       return;
     }

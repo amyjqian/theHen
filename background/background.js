@@ -139,13 +139,25 @@ async function triggerIntervention(tabId, domain, duration, persona) {
     // Log intervention, stats...
     await chrome.storage.session.set({ lastIntervention: Date.now() });
 
-    const stats = await chrome.storage.local.get(['stats']);
+    const stats = await chrome.storage.local.get(['stats', 'interventionHistory']);
     const currentStats = stats.stats || { interventionsToday: 0, interventionsComplied: 0 };
     currentStats.interventionsToday++;
-    // Ensure structure exists
     if (typeof currentStats.interventionsComplied === 'undefined') currentStats.interventionsComplied = 0;
 
-    await chrome.storage.local.set({ stats: currentStats });
+    // Log to History
+    const history = stats.interventionHistory || [];
+    history.unshift({
+        timestamp: Date.now(),
+        domain: domain,
+        message: message
+    });
+    // Keep last 50
+    if (history.length > 50) history.pop();
+
+    await chrome.storage.local.set({
+        stats: currentStats,
+        interventionHistory: history
+    });
 }
 
 async function generateInterventionMessage(persona, domain, minutes, settings) {
