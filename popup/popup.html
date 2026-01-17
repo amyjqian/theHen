@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Accountability Partner</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    body {
+      width: 350px;
+      min-height: 400px;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Onboarding Styles */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--border-radius);
+      font-size: 0.9rem;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* Dashboard Styles */
+    .dashboard-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .persona-avatar {
+      width: 60px;
+      height: 60px;
+      background-color: #e0e7ff;
+      color: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin: 0 auto 10px;
+      font-weight: bold;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .metric-card {
+      background: white;
+      padding: 12px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    .daily-reflection {
+      background: #f1f5f9;
+      padding: 12px;
+      border-radius: var(--border-radius);
+      font-size: 0.9rem;
+      color: #334155;
+      font-style: italic;
+      margin-top: 16px;
+      border-left: 4px solid var(--primary-color);
+    }
+
+    h1, h2, h3 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Onboarding View -->
+  <div id="onboarding-view" class="hidden">
+    <h2>Setup Your Partner</h2>
+    <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px;">
+      Tell us your goals so we can create the perfect accountability persona for you.
+    </p>
+
+    <div class="form-group">
+      <label for="goal">Primary Goal</label>
+      <input type="text" id="goal" placeholder="e.g. Focus on coding, Stop doomscrolling">
+    </div>
+
+    <div class="form-group">
+      <label for="motivation">Motivation Style</label>
+      <select id="motivation">
+        <option value="future_self">Future Self (Inspirational)</option>
+        <option value="guilt">Guilt Trip (Disappointed)</option>
+        <option value="strict">Strict Drill Sergeant</option>
+        <option value="rewards">Reward-based (Supportive)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="intensity">Intensity Level</label>
+      <select id="intensity">
+        <option value="gentle">Gentle (Polite reminders)</option>
+        <option value="firm">Firm (Persistent)</option>
+        <option value="brutal">Brutal (Unapologetic)</option>
+      </select>
+    </div>
+
+    <button id="save-settings">Create Persona</button>
+  </div>
+
+  <!-- Dashboard View -->
+  <div id="dashboard-view" class="hidden">
+    <div class="dashboard-header">
+      <div class="persona-avatar" id="persona-initials">AI</div>
+      <h2 id="persona-name">Accountability Partner</h2>
+      <p id="persona-tagline" style="color: #64748b; font-size: 0.85rem; margin: 0;">Keeping you on track</p>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-value" id="intervention-count">0</div>
+        <div class="metric-label">Interventions Today</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="compliance-rate">100%</div>
+        <div class="metric-label">Compliance Rate</div>
+      </div>
+    </div>
+
+    <button id="reset-settings" style="background-color: transparent; color: #94a3b8; border: 1px solid #e2e8f0; margin-top: 10px; font-size: 0.8rem; padding: 8px;">Reset Settings</button>
+    
+    <div id="loading-state" class="hidden" style="text-align: center; margin-top: 20px;">
+        Generating persona...
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

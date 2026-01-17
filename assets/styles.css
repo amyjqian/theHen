@@ -1,0 +1,20 @@
+/* Global variables for consistent theming */
+:root {
+  --primary-color: #6366f1; /* Indigo 500 */
+  --primary-hover: #4f46e5; /* Indigo 600 */
+  --bg-color: #f8fafc; /* Slate 50 */
+  --text-color: #1e293b; /* Slate 800 */
+  --card-bg: #ffffff;
+  --danger-color: #ef4444; /* Red 500 */
+  --success-color: #22c55e; /* Green 500 */
+  --border-radius: 8px;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
