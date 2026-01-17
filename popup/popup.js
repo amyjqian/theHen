@@ -81,10 +81,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const identity = identityInput.value.trim();
     const goal = goalInput.value.trim();
     const weakness = weaknessInput.value.trim();
-    const apiKey = apiKeyInput.value.trim();
 
-    if (!identity || !apiKey) {
-      alert('Please fill in your Identity and API Key.');
+    // Access global SECRETS from secrets.js
+    const secrets = window.SECRETS || (typeof SECRETS !== 'undefined' ? SECRETS : {});
+    const apiKey = secrets.OPENROUTER_API_KEY;
+
+    if (!identity) {
+      alert('Please fill in your Identity.');
+      return;
+    }
+
+    if (!apiKey) {
+      alert('API Key not found in secrets.js!');
       return;
     }
 
