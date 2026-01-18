@@ -2,7 +2,9 @@ let activeTabId = null;
 let activeDomain = null;
 let startTime = null;
 const CHECK_INTERVAL_ALARMS = 'check_activity';
+
 importScripts('../secrets.js');
+// const API_KEY = self.SECRETS.OPENROUTER_API_KEY || null;
 
 
 // Initialize
@@ -69,6 +71,7 @@ async function updateTimeSpent(domain, durationMs) {
 }
 
 async function checkRules() {
+    console.log('Checking rules for active domain:', activeDomain);
     if (!activeDomain || !startTime) return;
 
     // Add current session time to stored time for accurate checking
@@ -134,7 +137,9 @@ async function triggerIntervention(tabId, domain, duration, persona) {
         data: {
             personaName: persona.name,
             message: message,
-            tone: persona.tone
+            tone: persona.tone,
+            gif: persona.hen || 'example.gif'  // Add this line
+
         }
     }).catch(() => {
         // Tab might be closed or not ready
@@ -165,6 +170,8 @@ async function triggerIntervention(tabId, domain, duration, persona) {
 }
 
 async function generateInterventionMessage(persona, domain, minutes, settings) {
+    const API_KEY = self.SECRETS.OPENROUTER_API_KEY || null;
+    if (!API_KEY) throw new Error('API Key not available');
     
     const prompt = `
     You are ${persona.name}, an accountability partner.

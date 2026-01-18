@@ -17,7 +17,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Dashboard Elements
   const personaNameEl = document.getElementById('persona-name');
   const personaTaglineEl = document.getElementById('persona-tagline');
-  const personaInitialsEl = document.getElementById('persona-initials');
+  // const personaInitialsEl = document.getElementById('persona-initials');
+  const personaHen = document.getElementById('persona-hen');
   const interventionCountEl = document.getElementById('intervention-count');
 
   // Load state
@@ -44,7 +45,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     personaNameEl.textContent = persona.name;
     personaTaglineEl.textContent = persona.catchphrases ? persona.catchphrases[0] : 'Watching you.';
-    personaInitialsEl.textContent = persona.name.substring(0, 2).toUpperCase();
+    // personaInitialsEl.textContent = persona.name.substring(0, 2).toUpperCase();
+    personaHen.src = chrome.runtime.getURL('../assets/' + (persona.hen || 'example.gif'));
 
     if (stats) {
       interventionCountEl.textContent = stats.interventionsToday || 0;
@@ -151,6 +153,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       throw new Error('Invalid API Key format');
     }
 
+    henList = []
+    if (settings.intensity === 'unhinged') {
+      henList.push("example.gif");  
+    } else {
+      henList.push("example.gif");
+    }
+
     const prompt = `
     You are an expert personalized accountability coach generator.
     Create a detailed persona based on this user profile:
@@ -160,11 +169,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     - Coaching Style: "${settings.motivation}"
     - Intensity Level: "${settings.intensity}"
 
+    Based on the criteria, choose a hen from the following list that best matches the user's personality and needs:
+    "${henList.join(', ')}"
+
     Return ONLY a JSON object with this structure:
     {
       "name": "Creative Name",
       "tone": "Description of tone",
-      "catchphrases": ["Phrase 1", "Phrase 2", "Phrase 3"]
+      "catchphrases": ["Phrase 1", "Phrase 2", "Phrase 3"],
+      "hen": "Hen Gif"
     }
     `;
 
@@ -204,7 +217,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     return {
       name: 'Mock Marcus',
       tone: settings.motivation,
-      catchphrases: ['This is a mock response.', 'Use a real key for AI magic.']
+      catchphrases: ['This is a mock response.', 'Use a real key for AI magic.'],
+      hen: 'example.gif'
     };
   }
 });
