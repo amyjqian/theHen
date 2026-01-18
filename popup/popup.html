@@ -14,6 +14,7 @@
       min-height: 400px;
       padding: 16px;
       box-sizing: border-box;
+      background-color: #FCFAF5;
     }
 
     .hidden {
@@ -28,8 +29,8 @@
     label {
       display: block;
       margin-bottom: 8px;
-      font-weight: 500;
-      font-size: 0.9rem;
+      color: #552715;
+      font-size: 0.7rem;
     }
 
     input[type="text"],
@@ -38,9 +39,10 @@
       padding: 10px;
       border: 1px solid #e2e8f0;
       border-radius: var(--border-radius);
-      font-size: 0.9rem;
+      font-size: 0.65rem;
       box-sizing: border-box;
       transition: border-color 0.2s;
+      color:#8d867d;
     }
 
     input[type="text"]:focus,
@@ -55,20 +57,48 @@
     }
 
     button {
-      width: 100%;
-      padding: 12px;
-      background-color: var(--primary-color);
-      color: black;
-      border: 1px solid #000;
-      border-radius: var(--border-radius);
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.2s;
+      width: auto;
+      margin-top: 20px;
     }
 
     button:hover {
       background-color: var(--primary-hover);
     }
+    
+    #save-settings {
+      background-color: #8dca7a !important;
+      color: white !important;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+
+    /* You must also change the shadow to match the "depth" effect */
+    #save-settings::after {
+      box-shadow: inset -4px -4px #4e882c !important;
+    }
+
+    /* Hover state for custom color */
+    #save-settings:hover {
+      background-color: #6baf76 !important;
+    }
+
+     #reset-settings {
+      background-color: #f3d653 !important;
+      color: black !important;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+
+    /* You must also change the shadow to match the "depth" effect */
+    #reset-settings::after {
+      box-shadow: inset -4px -4px #d4951f !important;
+    }
+
+    /* Hover state for custom color */
+    #reset-settings:hover {
+      background-color: #e4b92b !important;
+    }
+    
 
     /* Dashboard Styles */
     .dashboard-header {
@@ -112,7 +142,7 @@
     }
 
     .metric-label {
-      font-size: 0.75rem;
+      font-size: 0.65rem;
       color: #64748b;
       margin-top: 4px;
     }
@@ -127,11 +157,14 @@
       margin-top: 16px;
       border-left: 4px solid var(--primary-color);
     }
+    
 
     h1,
     h2,
     h3 {
       margin-top: 0;
+      font-size: 1rem;
+      color: #30140c;
     }
   </style>
 </head>
@@ -141,14 +174,14 @@
   <!-- Onboarding View -->
   <div id="onboarding-view" class="hidden">
     <h2>Define Your Identity</h2>
-    <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px;">
+    <p style="color: #8b7564; font-size: 0.6rem; margin-bottom: 20px;">
       Who do you want to become? Your AI partner will help you bridge the gap between your current self and your ideal
       identity.
     </p>
 
     <div class="form-group">
       <label for="identity">I want to be...</label>
-      <input type="text" id="identity" placeholder="e.g. diligent, financially responsible, creative">
+      <input type="text" id="identity" class="nes-input" placeholder="e.g. diligent, financially responsible, creative">
     </div>
 
     <div class="form-group">
@@ -182,8 +215,9 @@
         </select>
       </div>
     </div>
-
-    <button id="save-settings">Generate Hen!</button>
+    <div style="text-align: center; margin-top: 20px;">
+      <button type="button" id="save-settings" class="nes-btn is-normal">Generate Hen!</button>
+    </div>
   </div>
 
   <!-- Dashboard View -->
@@ -213,10 +247,11 @@
         <div style="color: #94a3b8; text-align: center;">No distractions yet.</div>
       </div>
     </div>
-
-    <button id="reset-settings"
-      style="background-color: transparent; color: #94a3b8; border: 1px solid #e2e8f0; margin-top: 10px; font-size: 0.8rem; padding: 8px;">Reset
-      Settings</button>
+    <div style="text-align: center; margin-top: 20px;">
+      <button id="reset-settings"
+        id="save-settings" class="nes-btn is-warning">Reset
+        Settings</button>
+    </div>
 
     <div id="loading-state" class="hidden" style="text-align: center; margin-top: 20px;">
       Generating persona...

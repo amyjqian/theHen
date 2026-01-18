@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error(e);
     } finally {
       saveBtn.disabled = false;
-      saveBtn.textContent = 'Generate My Partner';
+      saveBtn.textContent = 'Generate Hen!';
     }
   }
 

@@ -33,28 +33,39 @@ function showOverlay(data) {
 
   // Styles
   const style = document.createElement('style');
+
   style.textContent = `
+
     .card {
-      background: white;
+
+      background: #FCFAF5;
       border-radius: 12px;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
       padding: 16px;
-      border: 1px solid #e2e8f0;
+      border: 1px solid #FCFAF5;
       animation: slideIn 0.5s ease-out;
+
     }
+
     @keyframes slideIn {
+
       from { transform: translateX(120%); }
       to { transform: translateX(0); }
+
     }
+
     .header {
+
       display: flex;
       align-items: center;
       margin-bottom: 12px;
+
     }
+
     .avatar {
+
       width: 32px;
       height: 32px;
-      background-color: #6366f1;
       color: white;
       border-radius: 50%;
       display: flex;
@@ -63,23 +74,35 @@ function showOverlay(data) {
       font-weight: bold;
       margin-right: 10px;
       font-size: 14px;
+
     }
+
     .name {
+
       font-weight: 700;
       color: #1e293b;
       font-size: 14px;
+
     }
+
     .message {
+
       color: #475569;
       font-size: 14px;
       line-height: 1.5;
       margin-bottom: 16px;
+
     }
+
     .actions {
+
       display: flex;
       gap: 8px;
+
     }
+
     button {
+
       flex: 1;
       padding: 8px;
       border-radius: 6px;
@@ -88,19 +111,31 @@ function showOverlay(data) {
       font-size: 13px;
       font-weight: 500;
       transition: opacity 0.2s;
+
     }
+
     button:hover {
+
       opacity: 0.9;
+
     }
+
     .btn-close {
+
       background-color: #ef4444;
       color: white;
+
     }
+
     .btn-ignore {
+
       background-color: #f1f5f9;
       color: #64748b;
+
     }
-  `;
+
+  `; 
+
 
   // HTML Content
   const container = document.createElement('div');
@@ -116,8 +151,8 @@ function showOverlay(data) {
       ${data.message}
     </div>
     <div class="actions">
-      <button class="btn-close" id="close-tab">Close Tab</button>
-      <button class="btn-ignore" id="ignore">Ignore</button>
+      <button class = "btn-close" id="close-tab">Close Tab</button>
+      <button class = "btn-ignore" id="ignore">Ignore</button>
     </div>
   `;
 
