@@ -2,7 +2,9 @@ let activeTabId = null;
 let activeDomain = null;
 let startTime = null;
 const CHECK_INTERVAL_ALARMS = 'check_activity';
+
 importScripts('../secrets.js');
+// const API_KEY = self.SECRETS.OPENROUTER_API_KEY || null;
 
 
 // Initialize
@@ -69,6 +71,7 @@ async function updateTimeSpent(domain, durationMs) {
 }
 
 async function checkRules() {
+    console.log('Checking rules for active domain:', activeDomain);
     if (!activeDomain || !startTime) return;
 
     // Add current session time to stored time for accurate checking
@@ -88,6 +91,7 @@ async function checkRules() {
     // Or just 15 mins normally. 
     // Let's use 10 seconds for easier testing.
     const threshold = 10 * 1000; // 10 seconds for testing
+    console.log(`Checking rules for ${activeDomain}. Is Social: ${isSocial}. Time: ${totalDuration}`);
 
     if (isSocial && totalDuration > threshold) {
         // Check if we already intervened recently to avoid spam
@@ -113,7 +117,16 @@ async function triggerIntervention(tabId, domain, duration, persona) {
     let message;
     const minutes = Math.floor(duration / 60000);
 
-    const API_KEY = self.SECRETS.OPENROUTER_API_KEY || null;
+    console.log("Triggering intervention for", domain);
+
+    let API_KEY = null;
+    try {
+        if (typeof self.SECRETS !== 'undefined') API_KEY = self.SECRETS.OPENROUTER_API_KEY;
+        else if (typeof SECRETS !== 'undefined') API_KEY = SECRETS.OPENROUTER_API_KEY;
+        console.log("API Key status:", API_KEY ? "Found" : "Missing");
+    } catch (e) {
+        console.error("Error accessing secrets:", e);
+    }
 
     // Use LLM if API Key exists and isn't 'mock'
     if (settings && API_KEY) {
@@ -128,15 +141,19 @@ async function triggerIntervention(tabId, domain, duration, persona) {
         message = `You've spent ${minutes} minutes on ${domain}. ${persona.catchphrases[0]}`;
     }
 
+    console.log("Sending intervention message to tab", tabId);
     // Send message to Content Script
     chrome.tabs.sendMessage(tabId, {
         action: 'SHOW_INTERVENTION',
         data: {
             personaName: persona.name,
             message: message,
-            tone: persona.tone
+            tone: persona.tone,
+            gif: persona.hen || 'example.gif'  // Add this line
+
         }
-    }).catch(() => {
+    }).catch((err) => {
+        console.error("Failed to send message to tab:", err);
         // Tab might be closed or not ready
     });
 
@@ -165,7 +182,9 @@ async function triggerIntervention(tabId, domain, duration, persona) {
 }
 
 async function generateInterventionMessage(persona, domain, minutes, settings) {
-    
+    const API_KEY = self.SECRETS.OPENROUTER_API_KEY || null;
+    if (!API_KEY) throw new Error('API Key not available');
+
     const prompt = `
     You are ${persona.name}, an accountability partner.
     Tone: ${persona.tone}.

@@ -1,29 +1,31 @@
+console.log("theHen Content Script Loaded");
 // Listen for messages from background
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === 'SHOW_INTERVENTION') {
-        showOverlay(request.data);
-    }
+  console.log("Content received message:", request);
+  if (request.action === 'SHOW_INTERVENTION') {
+    showOverlay(request.data);
+  }
 });
 
 function showOverlay(data) {
-    // Check if overlay already exists
-    if (document.getElementById('ai-accountability-host')) return;
+  // Check if overlay already exists
+  if (document.getElementById('ai-accountability-host')) return;
 
-    // Create Shadow Host
-    const host = document.createElement('div');
-    host.id = 'ai-accountability-host';
-    host.style.position = 'fixed';
-    host.style.zIndex = '2147483647'; // Max z-index
-    host.style.top = '20px';
-    host.style.right = '20px';
-    host.style.width = '320px';
-    host.style.fontFamily = 'sans-serif';
+  // Create Shadow Host
+  const host = document.createElement('div');
+  host.id = 'ai-accountability-host';
+  host.style.position = 'fixed';
+  host.style.zIndex = '2147483647'; // Max z-index
+  host.style.top = '20px';
+  host.style.right = '20px';
+  host.style.width = '320px';
+  host.style.fontFamily = 'sans-serif';
 
-    const shadow = host.attachShadow({ mode: 'open' });
+  const shadow = host.attachShadow({ mode: 'open' });
 
-    // Styles
-    const style = document.createElement('style');
-    style.textContent = `
+  // Styles
+  const style = document.createElement('style');
+  style.textContent = `
     .card {
       background: white;
       border-radius: 12px;
@@ -92,12 +94,14 @@ function showOverlay(data) {
     }
   `;
 
-    // HTML Content
-    const container = document.createElement('div');
-    container.className = 'card';
-    container.innerHTML = `
+  // HTML Content
+  const container = document.createElement('div');
+  container.className = 'card';
+  // Previous avatar line:
+  // <div class="avatar">${data.personaName.substring(0, 2).toUpperCase()}</div>
+  container.innerHTML = `
     <div class="header">
-      <div class="avatar">${data.personaName.substring(0, 2).toUpperCase()}</div>
+      <div class="avatar"><img src="${chrome.runtime.getURL('assets/' + (data.gif || 'example.gif'))}" alt="Persona Hen" style="width: 32px; height: 32px; border-radius: 50%;"></div>
       <div class="name">${data.personaName}</div>
     </div>
     <div class="message">
@@ -109,24 +113,24 @@ function showOverlay(data) {
     </div>
   `;
 
-    shadow.appendChild(style);
-    shadow.appendChild(container);
+  shadow.appendChild(style);
+  shadow.appendChild(container);
 
-    // Event Listeners
-    const closeBtn = container.querySelector('#close-tab');
-    const ignoreBtn = container.querySelector('#ignore');
+  // Event Listeners
+  const closeBtn = container.querySelector('#close-tab');
+  const ignoreBtn = container.querySelector('#ignore');
 
-    closeBtn.addEventListener('click', () => {
-        // We cannot close the tab from content script directly without permission issues sometimes,
-        // but we can try window.close() or ask background.
-        // Actually, content scripts can't close tabs easily if not opened by script.
-        // Better to send message to background to close tab.
-        chrome.runtime.sendMessage({ action: 'CLOSE_TAB' });
-    });
+  closeBtn.addEventListener('click', () => {
+    // We cannot close the tab from content script directly without permission issues sometimes,
+    // but we can try window.close() or ask background.
+    // Actually, content scripts can't close tabs easily if not opened by script.
+    // Better to send message to background to close tab.
+    chrome.runtime.sendMessage({ action: 'CLOSE_TAB' });
+  });
 
-    ignoreBtn.addEventListener('click', () => {
-        host.remove();
-    });
+  ignoreBtn.addEventListener('click', () => {
+    host.remove();
+  });
 
-    document.body.appendChild(host);
+  document.body.appendChild(host);
 }
