@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "@openrouter/sdk": "^0.3.14"
+    "@elevenlabs/elevenlabs-js": "^2.31.0",
+    "@openrouter/sdk": "^0.3.14",
+    "dotenv": "^17.2.3"
   }
 }
