@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     personaNameEl.textContent = persona.name;
     personaTaglineEl.textContent = persona.catchphrases ? persona.catchphrases[0] : 'Watching you.';
     // personaInitialsEl.textContent = persona.name.substring(0, 2).toUpperCase();
-    personaHen.src = chrome.runtime.getURL('../assets/' + (persona.hen || 'example.gif'));
+    personaHen.src = '../assets/' + persona.hen;
 
     if (stats) {
       interventionCountEl.textContent = stats.interventionsToday || 0;
@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (settings.intensity === 'unhinged') {
       henList.push("brownHen_gif.gif", "classicHen_gif.gif");  
     } else {
-      henList.push("example.gif");
+      henList.push("britishHen_gif.gif", "cowboyHen_gif.gif");
     }
 
     const prompt = `
