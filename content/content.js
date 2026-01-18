@@ -95,9 +95,12 @@ function showOverlay(data) {
     // HTML Content
     const container = document.createElement('div');
     container.className = 'card';
+s
+    // Previous avatar line:
+    // <div class="avatar">${data.personaName.substring(0, 2).toUpperCase()}</div>
     container.innerHTML = `
     <div class="header">
-      <div class="avatar">${data.personaName.substring(0, 2).toUpperCase()}</div>
+      <div class="avatar"><img src="${chrome.runtime.getURL('assets/' + (data.gif || 'example.gif'))}" alt="Persona Hen" style="width: 32px; height: 32px; border-radius: 50%;"></div>
       <div class="name">${data.personaName}</div>
     </div>
     <div class="message">
