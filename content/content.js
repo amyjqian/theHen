@@ -101,7 +101,7 @@ function showOverlay(data) {
   // <div class="avatar">${data.personaName.substring(0, 2).toUpperCase()}</div>
   container.innerHTML = `
     <div class="header">
-      <div class="avatar"><img src="${chrome.runtime.getURL('assets/' + (data.gif || 'example.gif'))}" alt="Persona Hen" style="width: 32px; height: 32px; border-radius: 50%;"></div>
+      <div class="avatar"><img src="${chrome.runtime.getURL('assets/' + (data.hen || 'example.gif'))}" alt="Persona Hen" style="width: 32px; height: 32px; border-radius: 50%;"></div>
       <div class="name">${data.personaName}</div>
     </div>
     <div class="message">

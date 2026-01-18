@@ -32,7 +32,7 @@
       "js": [
         "content/content.js"
       ],
-      "run_at": "document_end"
+      "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
