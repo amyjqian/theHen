@@ -120,10 +120,19 @@ async function triggerIntervention(tabId, domain, duration, persona) {
     console.log("Triggering intervention for", domain);
 
     let API_KEY = null;
+    let ELEVENLABS_KEY = null;
+
     try {
-        if (typeof self.SECRETS !== 'undefined') API_KEY = self.SECRETS.OPENROUTER_API_KEY;
-        else if (typeof SECRETS !== 'undefined') API_KEY = SECRETS.OPENROUTER_API_KEY;
+        if (typeof self.SECRETS !== 'undefined') {
+            API_KEY = self.SECRETS.OPENROUTER_API_KEY;
+            ELEVENLABS_KEY = self.SECRETS.ELEVENLABS_API_KEY;
+        }
+        else if (typeof SECRETS !== 'undefined') { 
+            API_KEY = SECRETS.OPENROUTER_API_KEY;
+            ELEVENLABS_KEY = self.SECRETS.ELEVENLABS_API_KEY;
+        }
         console.log("API Key status:", API_KEY ? "Found" : "Missing");
+        console.log("ElevenLabs Key status:", ELEVENLABS_KEY ? "Found" : "Missing");
     } catch (e) {
         console.error("Error accessing secrets:", e);
     }
@@ -142,6 +151,16 @@ async function triggerIntervention(tabId, domain, duration, persona) {
     }
 
     console.log("Sending intervention message to tab", tabId);
+
+    // Generate audio narration if ElevenLabs key exists
+    let audioUrl = null;
+    if (ELEVENLABS_KEY) {
+        try {
+            audioUrl = await generateNarration(message, ELEVENLABS_KEY, persona);
+        } catch (e) {
+            console.error('Audio generation failed:', e);
+        }
+    }
     // Send message to Content Script
     chrome.tabs.sendMessage(tabId, {
         action: 'SHOW_INTERVENTION',
@@ -236,3 +255,58 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
         chrome.tabs.remove(sender.tab.id);
     }
 });
+
+// Voice mapping based on persona characteristics
+const VOICE_MAP = {
+    
+    'cowboy': 'YEkUdc7PezGaXaRslSHB', 
+    'posh': '1BfrkuYXmEwp8AWqSLWk',
+    'vampire': 'XjdmlV0OFXfXE6Mg2Sb7',
+    'default': 'flHkNRp1BlvT73UL6gyz'
+};
+
+function selectVoiceForPersona(persona) {
+    const hen = persona.hen.toLowerCase();
+    
+    // Check for keywords in tone to determine voice
+    if (hen.includes('cowboy')) return VOICE_MAP.cowboy;
+    else if (hen.includes('classic') || hen.includes('brown')) {
+        return VOICE_MAP.default;
+    } else if (tone.includes('british')) {
+        return VOICE_MAP.posh;
+    }
+    
+    return VOICE_MAP.default;
+}
+
+async function generateNarration(text, apiKey, persona) {
+    const voiceId = selectVoiceForPersona(persona);
+    
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'audio/mpeg',
+            'Content-Type': 'application/json',
+            'xi-api-key': apiKey
+        },
+        body: JSON.stringify({
+            text: text,
+            model_id: 'eleven_multilingual_v2',
+            voice_settings: {
+                stability: 0.5,
+                similarity_boost: 0.5
+            }
+        })
+    });
+    
+    if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`ElevenLabs API Error: ${error}`);
+    }
+    
+    // Convert response to blob and create object URL
+    const audioBlob = await response.blob();
+    const audioUrl = URL.createObjectURL(audioBlob);
+    
+    return audioUrl;
+}
