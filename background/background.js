@@ -2,6 +2,8 @@ let activeTabId = null;
 let activeDomain = null;
 let startTime = null;
 const CHECK_INTERVAL_ALARMS = 'check_activity';
+importScripts('../secrets.js');
+
 
 // Initialize
 chrome.runtime.onInstalled.addListener(() => {
@@ -110,7 +112,8 @@ async function triggerIntervention(tabId, domain, duration, persona) {
 
     let message;
     const minutes = Math.floor(duration / 60000);
-    const API_KEY = secrets.OPENROUTER_API_KEY;
+
+    const API_KEY = self.SECRETS.OPENROUTER_API_KEY || null;
 
     // Use LLM if API Key exists and isn't 'mock'
     if (settings && API_KEY) {
@@ -179,7 +182,7 @@ async function generateInterventionMessage(persona, domain, minutes, settings) {
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
-            "Authorization": `Bearer ${secrets.OPENROUTER_API_KEY}`,
+            "Authorization": `Bearer ${API_KEY}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
