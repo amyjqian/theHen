@@ -1,1 +1,11 @@
-    window.SECRETS = { OPENROUTER_API_KEY: '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'};
+const SECRETS = {
+  OPENROUTER_API_KEY: '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'
+};
+
+if (typeof window !== 'undefined') {
+  window.SECRETS = SECRETS;
+}
+
+if (typeof self !== 'undefined') {
+  self.SECRETS = SECRETS;
+}
