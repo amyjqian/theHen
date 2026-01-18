@@ -11,6 +11,14 @@ function showOverlay(data) {
   // Check if overlay already exists
   if (document.getElementById('ai-accountability-host')) return;
 
+  // Play audio if available
+  if (data.audioUrl) {
+    const audio = new Audio(data.audioUrl);
+    audio.play().catch(err => {
+      console.error('Audio playback failed:', err);
+    });
+  }
+
   // Create Shadow Host
   const host = document.createElement('div');
   host.id = 'ai-accountability-host';
