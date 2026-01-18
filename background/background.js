@@ -138,11 +138,12 @@ async function triggerIntervention(tabId, domain, duration, persona) {
             personaName: persona.name,
             message: message,
             tone: persona.tone,
-            gif: persona.hen || 'example.gif'  // Add this line
+            hen: persona.hen || 'example.gif'  // Add this line
 
         }
     }).catch(() => {
         // Tab might be closed or not ready
+        console.error('Failed to send message to content script on tab', tabId, ':', err);
     });
 
     // Log intervention, stats...
