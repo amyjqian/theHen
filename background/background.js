@@ -152,6 +152,7 @@ async function triggerIntervention(tabId, domain, duration, persona) {
 
     console.log("Sending intervention message to tab", tabId);
 
+     // Generate audio narration if ElevenLabs key exists
     // Generate audio narration if ElevenLabs key exists
     let audioUrl = null;
     if (ELEVENLABS_KEY) {
@@ -161,20 +162,19 @@ async function triggerIntervention(tabId, domain, duration, persona) {
             console.error('Audio generation failed:', e);
         }
     }
-    // Send message to Content Script
+
+    // Send message to Content Script WITH audioUrl
     chrome.tabs.sendMessage(tabId, {
         action: 'SHOW_INTERVENTION',
         data: {
             personaName: persona.name,
             message: message,
             tone: persona.tone,
-            hen: persona.hen || 'example.gif'  // Add this line
-
+            hen: persona.hen || 'example.gif',
+            audioUrl: audioUrl  // Include this
         }
     }).catch((err) => {
         console.error("Failed to send message to tab:", err);
-        // Tab might be closed or not ready
-        console.error('Failed to send message to content script on tab', tabId, ':', err);
     });
 
     // Log intervention, stats...
@@ -213,7 +213,7 @@ async function generateInterventionMessage(persona, domain, minutes, settings) {
     
     The user has been on ${domain} for ${minutes} minutes.
     
-    Generate a 1-2 sentence intervention message.
+    Generate a 1 sentence intervention message.
     It should be ${settings.intensity} in intensity.
     Refer to their identity goal to guilt/motivate them.
     `;
@@ -272,7 +272,7 @@ function selectVoiceForPersona(persona) {
     if (hen.includes('cowboy')) return VOICE_MAP.cowboy;
     else if (hen.includes('classic') || hen.includes('brown')) {
         return VOICE_MAP.default;
-    } else if (tone.includes('british')) {
+    } else if (hen.includes('british')) {
         return VOICE_MAP.posh;
     }
     

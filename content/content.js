@@ -11,14 +11,6 @@ function showOverlay(data) {
   // Check if overlay already exists
   if (document.getElementById('ai-accountability-host')) return;
 
-  // Play audio if available
-  if (data.audioUrl) {
-    const audio = new Audio(data.audioUrl);
-    audio.play().catch(err => {
-      console.error('Audio playback failed:', err);
-    });
-  }
-
   // Create Shadow Host
   const host = document.createElement('div');
   host.id = 'ai-accountability-host';
@@ -159,21 +151,29 @@ function showOverlay(data) {
   shadow.appendChild(style);
   shadow.appendChild(container);
 
-  // Event Listeners
+  let audioPlayed = false;
+
   const closeBtn = container.querySelector('#close-tab');
   const ignoreBtn = container.querySelector('#ignore');
 
   closeBtn.addEventListener('click', () => {
-    // We cannot close the tab from content script directly without permission issues sometimes,
-    // but we can try window.close() or ask background.
-    // Actually, content scripts can't close tabs easily if not opened by script.
-    // Better to send message to background to close tab.
-    chrome.runtime.sendMessage({ action: 'CLOSE_TAB' });
+      playAudioIfAvailable();
+      chrome.runtime.sendMessage({ action: 'CLOSE_TAB' });
   });
 
   ignoreBtn.addEventListener('click', () => {
-    host.remove();
+      playAudioIfAvailable();
+      host.remove();
   });
+
+  function playAudioIfAvailable() {
+      if (!audioPlayed && data.audioUrl) {
+          audioPlayed = true;
+          const audio = new Audio(data.audioUrl);
+          audio.play().catch(err => console.error('Audio playback failed:', err));
+      }
+  }
+
 
   document.body.appendChild(host);
 }
