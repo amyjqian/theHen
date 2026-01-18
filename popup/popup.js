@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     henList = []
     if (settings.intensity === 'unhinged') {
-      henList.push("example.gif");  
+      henList.push("brownHen_gif.gif", "classicHen_gif.gif");  
     } else {
       henList.push("example.gif");
     }
