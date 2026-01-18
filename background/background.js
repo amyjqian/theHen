@@ -304,9 +304,13 @@ async function generateNarration(text, apiKey, persona) {
         throw new Error(`ElevenLabs API Error: ${error}`);
     }
     
-    // Convert response to blob and create object URL
+    // Convert response to base64 data URL (works in service workers)
     const audioBlob = await response.blob();
-    const audioUrl = URL.createObjectURL(audioBlob);
+    const arrayBuffer = await audioBlob.arrayBuffer();
+    const base64 = btoa(
+        new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
+    );
+    const audioUrl = `data:audio/mpeg;base64,${base64}`;
     
     return audioUrl;
 }
